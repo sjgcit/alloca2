@@ -8,6 +8,10 @@
 
 Using alloca2 is easy.  There is a an example provided.  It's a single header file and requires only two "calls".  First to initialize alloca2 and second to get memory.  That's all.
 
+### Performance
+
+Almost identical to alloca() on tested systems.  When allocating fixed sizes that can be calculated ( by the compiler ) at compile time alloca() and alloca2() are both about ten times faster than malloc().  Take that as a ballpark figure as it will vary from system-to-system and compiler-to-compiler.  For variable size allocations ( a more typical use for alloca() and alloca2() ) it at least twice as fast ( single allocations and frees ) than malloc().  However you would typically want to do multiple allocations ( e.g. building a temporary list or tree ) and in that case you get a lot more benefit as eash malloc() would need an expensive free(), whereas free() for alloca2() and alloca() is zero cost.  So the more temporary structures you need to allocate the more you benefit.
+
 ### Why should I use alloca2() anyway ?
 
 The much maligned *alloca()* function is a very handy memory allocation tool in C.  Unlike malloc it allocates from the local stack frame ( in most implementations ) and it is very fast.  Using it to allocate fixed amounts of memory was zero cost as most compilers will simply make that happen when the function's scope is initialized.  Using it for variable amounts of memory was slower, but still way faster than malloc as it simply involved adjusting the stack pointer.  And as an added bonus alloca() memory is zero cost to release as it simply get's returned when the function returns as part of returning the stack frame.
